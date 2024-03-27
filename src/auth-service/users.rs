@@ -31,7 +31,7 @@ impl Users for UsersImpl {
 
         // Check if username already exists. If so return an error.
         if self.username_to_user.contains_key(&username) {
-            return Err("Unable to create user. Username already exists.").to_owned();
+            return Err("Unable to create user. Username already exists.".to_owned());
         }
 
         let salt = SaltString::generate(&mut OsRng);
@@ -48,7 +48,7 @@ impl Users for UsersImpl {
         };
 
         self.username_to_user.insert(username, user.clone());
-        self.uuid_to_user.insert(user.user_uuid, user);
+        self.uuid_to_user.insert(user.user_uuid.clone(), user);
 
         Ok(())
     }
