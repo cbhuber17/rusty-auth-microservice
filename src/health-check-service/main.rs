@@ -16,7 +16,9 @@ pub mod authentication {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // AUTH_SERVICE_HOST_NAME will be set to 'auth' when running the health check service in Docker
     // ::0 is required for Docker to work: https://stackoverflow.com/questions/59179831/docker-app-server-ip-address-127-0-0-1-difference-of-0-0-0-0-ip
-    let auth_hostname = env::var("AUTH_SERVICE_HOST_NAME").unwrap_or("[::0]".to_owned());
+    // let auth_hostname = env::var("AUTH_SERVICE_HOST_NAME").unwrap_or("[::0]".to_owned());
+    let auth_hostname = env::var("AUTH_SERVICE_HOST_NAME").unwrap_or("127.0.0.1".to_owned());
+    println!("Connecting to: {}", auth_hostname);
 
     // Establish connection with auth service
     let mut client = AuthClient::connect(format!("http://{}:50051", auth_hostname)).await?;
@@ -54,7 +56,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         println!(
             "SIGN IN RESPONSE STATUS: {:?}",
-            todo!() // Log response status_code
+            StatusCode::from_i32(response.status_code)
         );
 
         // SIGN OUT
@@ -68,7 +70,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         println!(
             "SIGN OUT RESPONSE STATUS: {:?}",
-            todo!() // Log response status_code
+            StatusCode::from_i32(response.into_inner().status_code)
         );
 
         println!("--------------------------------------");
