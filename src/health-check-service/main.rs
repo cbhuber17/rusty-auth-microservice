@@ -12,6 +12,18 @@ pub mod authentication {
     tonic::include_proto!("authentication");
 }
 
+/// The main function of the health check service.
+///
+/// This function continuously performs sign-up, sign-in, and sign-out operations with the authentication service.
+/// It logs the response status of each operation and sleeps for a duration before repeating the process.
+///
+/// # Returns
+///
+/// An `Ok(())` result if the service runs successfully, otherwise an error message.
+///
+/// # Errors
+///
+/// This function returns an error if there are issues with establishing connections or performing gRPC requests.
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // AUTH_SERVICE_HOST_NAME will be set to 'auth' when running the health check service in Docker
