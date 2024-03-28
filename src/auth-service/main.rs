@@ -8,6 +8,11 @@ use auth::*;
 use sessions::{SessionsImpl, Sessions};
 use users::{UsersImpl, Users};
 
+/// The main function of the authentication service.
+///
+/// # Returns
+///
+/// An `Ok(())` result if the service starts successfully, otherwise an error message.
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Starting Auth Service...");

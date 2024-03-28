@@ -18,12 +18,40 @@ pub mod authentication {
 pub use authentication::auth_server::AuthServer;
 pub use tonic::transport::Server;
 
+/// `AuthService` struct represents the authentication service.
 pub struct AuthService {
+
+    /// `users_service` represents the service for managing users.
     users_service: Box<Mutex<dyn Users + Send + Sync>>,
+
+    /// `sessions_service` represents the service for managing sessions.
     sessions_service: Box<Mutex<dyn Sessions + Send + Sync>>,
 }
 
 impl AuthService {
+
+    /// Constructs a new `AuthService` instance.
+    ///
+    /// # Arguments
+    ///
+    /// * `users_service` - A boxed trait object representing the service for managing users.
+    /// * `sessions_service` - A boxed trait object representing the service for managing sessions.
+    ///
+    /// # Returns
+    ///
+    /// A new instance of `AuthService`.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use your_crate_name::{AuthService, Users, Sessions};
+    /// use std::sync::Mutex;
+    ///
+    /// // Assuming you have implementations for Users and Sessions traits
+    /// let users_service = Box::new(Mutex::new(/* your implementation */));
+    /// let sessions_service = Box::new(Mutex::new(/* your implementation */));
+    /// let auth_service = AuthService::new(users_service, sessions_service);
+    /// ```
     pub fn new(
         users_service: Box<Mutex<dyn Users + Send + Sync>>,
         sessions_service: Box<Mutex<dyn Sessions + Send + Sync>>,
@@ -37,6 +65,32 @@ impl AuthService {
 
 #[tonic::async_trait]
 impl Auth for AuthService {
+
+    /// Handles user sign-in requests.
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - A gRPC request containing sign-in credentials.
+    ///
+    /// # Returns
+    ///
+    /// A gRPC response containing the sign-in status and session information.
+    ///
+    /// # Errors
+    ///
+    /// This method returns an error if there are issues with authentication or session creation.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// // Assuming `auth_service` is an instance of AuthService
+    /// let request = SignInRequest {
+    ///     username: "example_user".to_string(),
+    ///     password: "example_password".to_string(),
+    /// };
+    /// let response = auth_service.sign_in(Request::new(request)).await;
+    /// assert!(response.is_ok());
+    /// ```
     async fn sign_in(
         &self,
         request: Request<SignInRequest>,
@@ -75,6 +129,31 @@ impl Auth for AuthService {
         Ok(Response::new(reply))
     }
 
+    /// Handles user sign-up requests.
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - A gRPC request containing sign-up credentials.
+    ///
+    /// # Returns
+    ///
+    /// A gRPC response containing the sign-up status.
+    ///
+    /// # Errors
+    ///
+    /// This method returns an error if there are issues with user creation.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// // Assuming `auth_service` is an instance of AuthService
+    /// let request = SignUpRequest {
+    ///     username: "new_user".to_string(),
+    ///     password: "new_password".to_string(),
+    /// };
+    /// let response = auth_service.sign_up(Request::new(request)).await;
+    /// assert!(response.is_ok());
+    /// ```
     async fn sign_up(&self, request: Request<SignUpRequest>) -> Result<Response<SignUpResponse>, Status> {
         println!("Got a request: {:?}", request);
 
@@ -102,6 +181,30 @@ impl Auth for AuthService {
         }
     }
 
+    /// Handles user sign-out requests.
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - A gRPC request containing the session token to be invalidated.
+    ///
+    /// # Returns
+    ///
+    /// A gRPC response containing the sign-out status.
+    ///
+    /// # Errors
+    ///
+    /// This method returns an error if there are issues with session deletion.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// // Assuming `auth_service` is an instance of AuthService
+    /// let request = SignOutRequest {
+    ///     session_token: "example_session_token".to_string(),
+    /// };
+    /// let response = auth_service.sign_out(Request::new(request)).await;
+    /// assert!(response.is_ok());
+    /// ```
     async fn sign_out(&self, request: Request<SignOutRequest>) -> Result<Response<SignOutResponse>, Status> {
         println!("Got a request: {:?}", request);
 

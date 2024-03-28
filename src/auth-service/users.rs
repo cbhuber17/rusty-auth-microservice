@@ -7,26 +7,120 @@ use uuid::Uuid;
 
 use std::collections::HashMap;
 
+/// `Users` trait defines methods for managing user data.
 pub trait Users {
+
+    /// Creates a new user with the provided username and password.
+    ///
+    /// # Arguments
+    ///
+    /// * `username` - A string representing the username of the user to be created.
+    /// * `password` - A string representing the password of the user to be created.
+    ///
+    /// # Returns
+    ///
+    /// An `Ok(())` result if the user is created successfully, otherwise an error message.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// // Assuming `users_service` implements `Users` trait
+    /// let result = users_service.create_user("username".to_string(), "password".to_string());
+    /// match result {
+    ///     Ok(_) => println!("User created successfully."),
+    ///     Err(error) => eprintln!("Failed to create user: {}", error),
+    /// }
+    /// ```
     fn create_user(&mut self, username: String, password: String) -> Result<(), String>;
+
+    /// Retrieves the UUID of the user with the provided username and password.
+    ///
+    /// # Arguments
+    ///
+    /// * `username` - A string representing the username of the user to retrieve.
+    /// * `password` - A string representing the password of the user to retrieve.
+    ///
+    /// # Returns
+    ///
+    /// An `Option<String>` containing the UUID of the user if found, otherwise `None`.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// // Assuming `users_service` implements `Users` trait
+    /// let user_uuid = users_service.get_user_uuid("username".to_string(), "password".to_string());
+    /// match user_uuid {
+    ///     Some(uuid) => println!("User UUID: {}", uuid),
+    ///     None => println!("User not found."),
+    /// }
+    /// ```
     fn get_user_uuid(&self, username: String, password: String) -> Option<String>;
+
+    /// Deletes the user with the specified UUID.
+    ///
+    /// # Arguments
+    ///
+    /// * `user_uuid` - A string representing the UUID of the user to be deleted.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// // Assuming `users_service` implements `Users` trait
+    /// users_service.delete_user("user_uuid".to_string());
+    /// println!("User deleted successfully.");
+    /// ```
     fn delete_user(&mut self, user_uuid: String);
 }
 
+/// `User` struct represents user data.
 #[derive(Clone)]
 pub struct User {
-    user_uuid: String,
-    username: String,
-    password: String,
+    /// A string representing the UUID of the user.
+    pub user_uuid: String,
+
+    /// A string representing the username of the user.
+    pub username: String,
+
+    /// A string representing the password of the user.
+    pub password: String,
 }
 
+/// `UsersImpl` represents an implementation of the `Users` trait.
+///
+/// This implementation stores user data in memory using two HashMaps: one mapping UUIDs to users
+/// and the other mapping usernames to users.
 #[derive(Default)]
 pub struct UsersImpl {
-    uuid_to_user: HashMap<String, User>,
-    username_to_user: HashMap<String, User>,
+    /// A HashMap that maps user UUIDs to user data.
+    pub uuid_to_user: HashMap<String, User>,
+
+    /// A HashMap that maps usernames to user data.
+    pub username_to_user: HashMap<String, User>,
 }
 
 impl Users for UsersImpl {
+
+    /// Creates a new user with the provided username and password.
+    ///
+    /// # Arguments
+    ///
+    /// * `username` - A string representing the username of the user to be created.
+    /// * `password` - A string representing the password of the user to be created.
+    ///
+    /// # Returns
+    ///
+    /// An `Ok(())` result if the user is created successfully, otherwise an error message.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// // Assuming `users_impl` is an instance of `UsersImpl`
+    /// let result = users_impl.create_user("username".to_string(), "password".to_string());
+    /// match result {
+    ///     Ok(_) => println!("User created successfully."),
+    ///     Err(error) => eprintln!("Failed to create user: {}", error),
+    /// }
+    /// ```
     fn create_user(&mut self, username: String, password: String) -> Result<(), String> {
 
         // Check if username already exists. If so return an error.
@@ -53,6 +147,27 @@ impl Users for UsersImpl {
         Ok(())
     }
 
+    /// Retrieves the UUID of the user with the provided username and password.
+    ///
+    /// # Arguments
+    ///
+    /// * `username` - A string representing the username of the user to retrieve.
+    /// * `password` - A string representing the password of the user to retrieve.
+    ///
+    /// # Returns
+    ///
+    /// An `Option<String>` containing the UUID of the user if found, otherwise `None`.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// // Assuming `users_impl` is an instance of `UsersImpl`
+    /// let user_uuid = users_impl.get_user_uuid("username".to_string(), "password".to_string());
+    /// match user_uuid {
+    ///     Some(uuid) => println!("User UUID: {}", uuid),
+    ///     None => println!("User not found."),
+    /// }
+    /// ```
     fn get_user_uuid(&self, username: String, password: String) -> Option<String> {
         let user = self.username_to_user.get(&username)?;
 
@@ -70,6 +185,19 @@ impl Users for UsersImpl {
         None
     }
 
+    /// Deletes the user with the specified UUID.
+    ///
+    /// # Arguments
+    ///
+    /// * `user_uuid` - A string representing the UUID of the user to be deleted.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// // Assuming `users_impl` is an instance of `UsersImpl`
+    /// users_impl.delete_user("user_uuid".to_string());
+    /// println!("User deleted successfully.");
+    /// ```
     fn delete_user(&mut self, user_uuid: String) {
         if let Some(user) = self.uuid_to_user.get(&user_uuid) {
             let user_uuid = user.user_uuid.clone();
