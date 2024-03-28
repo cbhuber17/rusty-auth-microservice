@@ -15,8 +15,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // This is needed for Docker to work.
     // See: https://stackoverflow.com/questions/39525820/docker-port-forwarding-not-working
     // Port 50051 is the recommended gRPC port.
-    // let addr = "[::0]:50051".parse()?;
-    let addr = "127.0.0.1:50051".parse()?;
+    let addr = "[::0]:50051".parse()?;
+    // let addr = "127.0.0.1:50051".parse()?;
 
     let users_service = Box::new(Mutex::new(UsersImpl::default()));
     let sessions_service = Box::new(Mutex::new(SessionsImpl::default()));
