@@ -5,8 +5,8 @@ mod sessions;
 mod users;
 
 use auth::*;
-use sessions::{SessionsImpl, Sessions};
-use users::{UsersImpl, Users};
+use sessions::SessionsImpl;
+use users::UsersImpl;
 
 /// The main function of the authentication service.
 ///

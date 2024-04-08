@@ -3,10 +3,9 @@ use std::env;
 use authentication::auth_client::AuthClient;
 use authentication::{SignInRequest, SignOutRequest, SignUpRequest};
 use tokio::time::{sleep, Duration};
-use tonic::{Request, Response};
 use uuid::Uuid;
 
-use crate::authentication::{StatusCode, SignUpResponse, SignInResponse, SignOutResponse};
+use crate::authentication::StatusCode;
 
 pub mod authentication {
     tonic::include_proto!("authentication");

@@ -3,10 +3,7 @@ use clap::{Parser, Subcommand};
 
 use authentication::auth_client::AuthClient;
 use authentication::{SignInRequest, SignOutRequest, SignUpRequest};
-use tonic::transport::Channel;
-use tonic::{Request, Response};
 
-use crate::authentication::{SignUpResponse, SignInResponse, SignOutResponse};
 
 pub mod authentication {
     tonic::include_proto!("authentication");
